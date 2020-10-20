@@ -10,6 +10,10 @@
  *  This main class creates and initialises all the others: it creates all
  *  rooms, creates the parser and starts the game.  It also evaluates and
  *  executes the commands that the parser returns.
+ *  
+ *  STUDENT NOTE:
+ *  The intended layout of the rooms is depicted in the map.jpg file
+ *  found in this project's GitHub repository.
  * 
  * @author  Ryan Cathcart
  * @version 2020.10.20
@@ -39,30 +43,73 @@ public class Game
      */
     private void createRooms()
     {
-        Room outside, theater, pub, lab, office;
+        Room townSquare, northPath, eastPath, southPath, westPath, 
+        castle, church, blacksmith, mines, apothecary, 
+        inn, forest, bank, market, barbVillage;
       
         // create the rooms
-        outside = new Room("outside the main entrance of the university");
-        theater = new Room("in a lecture theater");
-        pub = new Room("in the campus pub");
-        lab = new Room("in a computing lab");
-        office = new Room("in the computing admin office");
+        townSquare = new Room("in the town's square: the middle of town");
+        northPath = new Room("on the path north of the town square");
+        eastPath = new Room("on the path east of the town square");
+        southPath = new Room("on the path south of the town square");
+        westPath = new Room("on the path west of the town square");
+        castle = new Room("in the town castle");
+        church = new Room("in the town church");
+        blacksmith = new Room("in the town blacksmith");
+        mines = new Room("in the town mines");
+        apothecary = new Room("in the town apothecary");
+        inn = new Room("in the town inn");
+        forest = new Room("in the forest south of town");
+        bank = new Room("in the town bank");
+        market = new Room("in the town market");
+        barbVillage = new Room("in the barbarian village west of town");
+        
         
         // initialise room exits
-        outside.setExit("east", theater);
-        outside.setExit("south", lab);
-        outside.setExit("west", pub);
+        townSquare.setExit("north", northPath);
+        townSquare.setExit("east", eastPath);
+        townSquare.setExit("south", southPath);
+        townSquare.setExit("west", westPath);
 
-        theater.setExit("west", outside);
+        northPath.setExit("east", church);
+        northPath.setExit("south", townSquare);
+        northPath.setExit("west", castle);
+        
+        eastPath.setExit("north", blacksmith);
+        eastPath.setExit("south", mines);
+        eastPath.setExit("west", townSquare);
+        
+        southPath.setExit("north", townSquare);
+        southPath.setExit("east", inn);
+        southPath.setExit("south", forest);
+        southPath.setExit("west", apothecary);
+        
+        westPath.setExit("north", market);
+        westPath.setExit("east", townSquare);
+        westPath.setExit("south", bank);
+        westPath.setExit("west", barbVillage);
+        
+        castle.setExit("east", northPath);
+        
+        church.setExit("west", northPath);
+        
+        blacksmith.setExit("south", eastPath);
+        
+        mines.setExit("north", eastPath);
+        
+        apothecary.setExit("east", southPath);
+        
+        inn.setExit("west", southPath);
+        
+        forest.setExit("north", southPath);
+        
+        bank.setExit("north", westPath);
+        
+        market.setExit("south", westPath);
+        
+        barbVillage.setExit("east", westPath);
 
-        pub.setExit("east", outside);
-
-        lab.setExit("north", outside);
-        lab.setExit("east", office);
-
-        office.setExit("west", lab);
-
-        currentRoom = outside;  // start game outside
+        currentRoom = townSquare;  // start game in the town square
     }
 
     /**
