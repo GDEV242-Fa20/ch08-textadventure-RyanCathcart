@@ -26,7 +26,7 @@ public class Item {
      * @return the description and weight
      */
     public String printItem() {
-        return desc + ", weight: " + weight;
+        return desc + "...weight: " + weight;
     }
 
     /**

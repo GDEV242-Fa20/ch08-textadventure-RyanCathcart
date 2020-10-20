@@ -1,5 +1,6 @@
 import java.util.Set;
 import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
@@ -20,7 +21,7 @@ public class Room
 {
     private String description;
     private HashMap<String, Room> exits;        // stores exits of this room.
-    private Item item;
+    private ArrayList<Item> items;
 
     /**
      * Create a room described "description". Initially, it has
@@ -32,7 +33,7 @@ public class Room
     {
         this.description = description;
         exits = new HashMap<>();
-        item = null;
+        items = new ArrayList<Item>();
     }
     
     /**
@@ -46,7 +47,8 @@ public class Room
     {
         this.description = description;
         exits = new HashMap<>();
-        this.item = item;
+        items = new ArrayList<Item>();
+        items.add(item);
     }
 
     /**
@@ -63,8 +65,8 @@ public class Room
      * Define the Room's Item
      * @param item the Item to be added.
      */
-    public void setItem(Item item) {
-        this.item = item;
+    public void addItem(Item item) {
+        items.add(item);
     }
 
     /**
@@ -84,11 +86,16 @@ public class Room
      */
     public String getLongDescription()
     {
-        if (item == null) {
-            return "You are " + description + ".\nItems: This area has no items.\n" + getExitString();
+        String desc = "You are " + description + ".\nItems: ";
+        if (items.size() == 0) {
+            desc += "This area has no items.\n" + getExitString();
         } else {
-            return "You are " + description + ".\nItems: " + item.printItem() + "\n" + getExitString();
-        }        
+            for (Item item : items) {
+                desc += item.printItem() + ", ";
+            }
+            desc += "\n" + getExitString();
+        }
+        return desc;
     }
 
     /**

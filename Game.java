@@ -110,7 +110,8 @@ public class Game
         barbVillage.setExit("east", westPath);
         
         // Initialize room items
-        forest.setItem(new Item("apple", 1));
+        forest.addItem(new Item("apple", 1));
+        forest.addItem(new Item("stick", 2));
 
         currentRoom = townSquare;  // start game in the town square
     }
