@@ -191,9 +191,8 @@ public class Game
      */
     private void printHelp() 
     {
-        System.out.println("You are lost. You are alone. You wander");
-        System.out.println("around at the university.");
-        System.out.println();
+        System.out.println("You find yourself in the territory");
+        System.out.println("of a medieval village. Where to?\n");
         System.out.println("Your command words are:");
         parser.showCommands();
     }
