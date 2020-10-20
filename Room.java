@@ -12,25 +12,41 @@ import java.util.Iterator;
  * connected to other rooms via exits.  For each existing exit, the room 
  * stores a reference to the neighboring room.
  * 
- * @author  Michael Kölling and David J. Barnes
- * @version 2016.02.29
+ * @author  Ryan Cathcart
+ * @version 2020.10.20
  */
 
 public class Room 
 {
     private String description;
     private HashMap<String, Room> exits;        // stores exits of this room.
+    private Item item;
 
     /**
      * Create a room described "description". Initially, it has
      * no exits. "description" is something like "a kitchen" or
-     * "an open court yard".
+     * "an open court yard". This room's item is initialized to null.
      * @param description The room's description.
      */
     public Room(String description) 
     {
         this.description = description;
         exits = new HashMap<>();
+        item = null;
+    }
+    
+    /**
+     * Create a room described "description" and containing an item. 
+     * Initially, it has no exits. "description" is something 
+     * like "a kitchen" or "an open court yard".
+     * @param description The room's description.
+     * @param item        The item found in this room.
+     */
+    public Room(String description, Item item) 
+    {
+        this.description = description;
+        exits = new HashMap<>();
+        this.item = item;
     }
 
     /**
@@ -41,6 +57,14 @@ public class Room
     public void setExit(String direction, Room neighbor) 
     {
         exits.put(direction, neighbor);
+    }
+    
+    /**
+     * Define the Room's Item
+     * @param item the Item to be added.
+     */
+    public void setItem(Item item) {
+        this.item = item;
     }
 
     /**
@@ -60,7 +84,11 @@ public class Room
      */
     public String getLongDescription()
     {
-        return "You are " + description + ".\n" + getExitString();
+        if (item == null) {
+            return "You are " + description + ".\nItems: This area has no items.\n" + getExitString();
+        } else {
+            return "You are " + description + ".\nItems: " + item.printItem() + "\n" + getExitString();
+        }        
     }
 
     /**

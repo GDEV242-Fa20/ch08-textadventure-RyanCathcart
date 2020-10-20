@@ -108,6 +108,9 @@ public class Game
         market.setExit("south", westPath);
         
         barbVillage.setExit("east", westPath);
+        
+        // Initialize room items
+        forest.setItem(new Item("apple", 1));
 
         currentRoom = townSquare;  // start game in the town square
     }
