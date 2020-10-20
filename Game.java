@@ -19,7 +19,12 @@ public class Game
 {
     private Parser parser;
     private Room currentRoom;
-        
+    
+    public static void main(String[] args) {
+        Game game = new Game();
+        game.play();
+    }
+    
     /**
      * Create the game and initialise its internal map.
      */
