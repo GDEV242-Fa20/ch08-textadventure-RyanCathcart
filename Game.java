@@ -1,11 +1,10 @@
 /**
  *  This class is the main class of the "World of Zuul" application. 
  *  "World of Zuul" is a very simple, text based adventure game.  Users 
- *  can walk around some scenery. That's all. It should really be extended 
- *  to make it more interesting!
+ *  can walk around some scenery. That's all. 
  * 
- *  To play this game, create an instance of this class and call the "play"
- *  method.
+ *  To play this game, create an instance of this class in BlueJ and call the "play"
+ *  method, or execute the main method in this class.
  * 
  *  This main class creates and initialises all the others: it creates all
  *  rooms, creates the parser and starts the game.  It also evaluates and
@@ -22,7 +21,7 @@
 public class Game 
 {
     private Parser parser;
-    private Room currentRoom;
+    private Player player;
     
     public static void main(String[] args) {
         Game game = new Game();
@@ -112,8 +111,10 @@ public class Game
         // Initialize room items
         forest.addItem(new Item("apple", 1));
         forest.addItem(new Item("stick", 2));
-
-        currentRoom = townSquare;  // start game in the town square
+        
+        mines.addItem(new Item("pendant", 0));
+        
+        player = new Player("Bob", townSquare); // Create player and start them in the town square
     }
 
     /**
@@ -130,6 +131,7 @@ public class Game
         while (! finished) {
             Command command = parser.getCommand();
             finished = processCommand(command);
+            System.out.println();
         }
         System.out.println("Thank you for playing.  Good bye.");
     }
@@ -141,10 +143,12 @@ public class Game
     {
         System.out.println();
         System.out.println("Welcome to the World of Zuul!");
-        System.out.println("World of Zuul is a new, incredibly boring adventure game.");
+        System.out.println("World of Zuul is a new, incredible adventure game.");
         System.out.println("Type '" + CommandWord.HELP + "' if you need help.");
+        System.out.println("---------------------------------------------------------");
         System.out.println();
-        System.out.println(currentRoom.getLongDescription());
+        System.out.println(player.getRoom().getLongDescription());
+        System.out.println();
     }
 
     /**
@@ -175,8 +179,24 @@ public class Game
                 look();
                 break;
                 
+            case TAKE:
+                take(command);
+                break;
+                
+            case DROP:
+                drop(command);
+                break;
+                
+            case ITEMS:
+                player.printBackpack();
+                break;
+                
             case EAT:
                 eat();
+                break;
+                
+            case EQUIP:
+                equip(command);
                 break;
 
             case QUIT:
@@ -216,14 +236,14 @@ public class Game
         String direction = command.getSecondWord();
 
         // Try to leave current room.
-        Room nextRoom = currentRoom.getExit(direction);
+        Room nextRoom = player.getRoom().getExit(direction);
 
         if (nextRoom == null) {
             System.out.println("There is no door!");
         }
         else {
-            currentRoom = nextRoom;
-            System.out.println(currentRoom.getLongDescription());
+            player.setRoom(nextRoom);
+            System.out.println(player.getRoom().getLongDescription());
         }
     }
     
@@ -231,7 +251,58 @@ public class Game
      * Look around the room. Prints the current room's description.
      */
     private void look() {
-        System.out.println(currentRoom.getLongDescription());
+        System.out.println(player.getRoom().getLongDescription());
+    }
+    
+    /**
+     * Try to take the specified item from the room and put it
+     * in the player's backpack.
+     * @param command The user-entered command.
+     */
+    private void take(Command command) {
+        if(!command.hasSecondWord()) {
+            // if there is no second word, we don't know what to take...
+            System.out.println("Take what?");
+            return;
+        }
+        
+        String itemName = command.getSecondWord();
+        
+        // Try to take item.
+        Item newItem = player.getRoom().getItem(itemName);
+        
+        if (newItem == null) {
+            System.out.println("That item doesn't exist! Check spelling.");
+        } else {
+            player.addItem(newItem);
+        }
+    }
+    
+    /**
+     * Try to take the specified item from the Player's backpack
+     * and put it in the room.
+     * @param command The user-entered command.
+     */
+    private void drop(Command command) {
+        if(!command.hasSecondWord()) {
+            // if there is no second word, we don't know what to drop...
+            System.out.println("Drop what?");
+            return;
+        }
+        
+        String itemName = command.getSecondWord();
+        
+        // Try to take item.
+        Item newItem = player.getItem(itemName);
+        
+        
+        if (newItem == null) {
+            System.out.println("That item doesn't exist! Check spelling.");
+        } else {
+            player.removeItem(newItem);
+            player.getRoom().addItem(newItem);
+            // maybe print backpack with new item in it?
+        }
     }
     
     /**
@@ -239,6 +310,26 @@ public class Game
      */
     private void eat() {
         System.out.println("You have eaten now and you are not hungry any more.");
+    }
+    
+    private void equip(Command command) {
+        if(!command.hasSecondWord()) {
+            // if there is no second word, we don't know what to drop...
+            System.out.println("Equip what?");
+            return;
+        }
+        
+        String itemName = command.getSecondWord();
+        
+        // Try to equip item.
+        Item newItem = player.getItem(itemName);
+        
+        if (newItem == null) {
+            System.out.println("That item doesn't exist! Check spelling.");
+        } else {
+            player.equipItem(newItem);
+        }
+        
     }
     
     /** 

@@ -62,11 +62,20 @@ public class Room
     }
     
     /**
-     * Define the Room's Item
+     * Add an Item to this Room.
      * @param item the Item to be added.
      */
     public void addItem(Item item) {
         items.add(item);
+    }
+    
+    /**
+     * Removes an Item from this Room.
+     * @param   item the Item to be removed.
+     * @return  Whether or not the item was removed.
+     */
+    public boolean removeItem(Item item) {
+        return items.remove(item);
     }
 
     /**
@@ -86,7 +95,7 @@ public class Room
      */
     public String getLongDescription()
     {
-        String desc = "You are " + description + ".\nItems: ";
+        String desc = "You are " + description + ".\nArea Items: ";
         if (items.size() == 0) {
             desc += "This area has no items.\n" + getExitString();
         } else {
@@ -122,6 +131,21 @@ public class Room
     public Room getExit(String direction) 
     {
         return exits.get(direction);
+    }
+    
+    /**
+     * Return the first item found with the specified description. 
+     * If there is no item with that description, return null.
+     * @param itemDesc The item's description.
+     * @return The item with the specified description.
+     */
+    public Item getItem(String itemDesc) {
+        for (int i=0;i<items.size();i++) {
+            if (items.get(i).getDesc().equalsIgnoreCase(itemDesc)) {
+                return items.get(i);
+            }
+        }
+        return null;
     }
 }
 

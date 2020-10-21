@@ -21,22 +21,27 @@ public class Item {
     }
     
     /**
+     * Get the description of this Item.
+     * @return This Item's description.
+     */
+    public String getDesc() {
+        return desc;
+    }
+    
+    /**
+     * Get the weight of this Item.
+     * @return This Item's weight.
+     */
+    public int getWeight() {
+        return weight;
+    }
+    
+    /**
      * Get the description of this item.
      * 
      * @return the description and weight
      */
     public String printItem() {
         return desc + "...weight: " + weight;
-    }
-
-    /**
-     * An example of a method - replace this comment with your own
-     *
-     * @param  y  a sample parameter for a method
-     * @return    the sum of x and y
-     */
-    public int sampleMethod(int y) {
-        // put your code here
-        return y;
     }
 }
