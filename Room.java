@@ -22,6 +22,7 @@ public class Room
     private String description;
     private HashMap<String, Room> exits;        // stores exits of this room.
     private ArrayList<Item> items;
+    private ArrayList<NonPlayerCharacter> npcs;
 
     /**
      * Create a room described "description". Initially, it has
@@ -34,6 +35,7 @@ public class Room
         this.description = description;
         exits = new HashMap<>();
         items = new ArrayList<Item>();
+        npcs = new ArrayList<NonPlayerCharacter>();
     }
     
     /**
@@ -59,6 +61,14 @@ public class Room
     public void setExit(String direction, Room neighbor) 
     {
         exits.put(direction, neighbor);
+    }
+    
+    /**
+     * Add an NPC to this Room.
+     * @param npc the NPC to be added.
+     */
+    public void addNPC(NonPlayerCharacter npc) {
+        npcs.add(npc);
     }
     
     /**
@@ -96,14 +106,22 @@ public class Room
     public String getLongDescription()
     {
         String desc = "You are " + description + ".\nArea Items: ";
-        if (items.size() == 0) {
-            desc += "This area has no items.\n" + getExitString();
+        if (items.size() == 0) {                    // print the items in the area
+            desc += "This area has no items.";
         } else {
             for (Item item : items) {
                 desc += item.printItem() + ", ";
             }
-            desc += "\n" + getExitString();
         }
+        desc += "\nArea NPCs: ";
+        if (npcs.size() == 0) {                     // print the npcs in the area
+            desc += "This area has no NPCs.";
+        } else {
+            for (NonPlayerCharacter npc : npcs) {
+                desc += npc.getName() + ", ";
+            } 
+        }
+        desc += "\n" + getExitString();
         return desc;
     }
 
@@ -143,6 +161,21 @@ public class Room
         for (int i=0;i<items.size();i++) {
             if (items.get(i).getDesc().equalsIgnoreCase(itemDesc)) {
                 return items.get(i);
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * Return the first NPC found with the specified name. 
+     * If there is no NPC with that name, return null.
+     * @param npcName The NPC's name.
+     * @return The NPC with the specified name.
+     */
+    public NonPlayerCharacter getNPC(String npcName) {
+        for (int i=0;i<npcs.size();i++) {
+            if (npcs.get(i).getName().equalsIgnoreCase(npcName)) {
+                return npcs.get(i);
             }
         }
         return null;

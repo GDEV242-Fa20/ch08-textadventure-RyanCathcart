@@ -62,6 +62,7 @@ public class Player{
     /**
      * Removes an item from the Player's backpack.
      * @param item The item to be removed.
+     * @return if the item was removed
      */
     public boolean removeItem(Item item) {
         currentWeight -= item.getWeight();

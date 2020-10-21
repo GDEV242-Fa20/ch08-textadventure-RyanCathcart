@@ -15,7 +15,7 @@
  *  found in this project's GitHub repository.
  * 
  * @author  Ryan Cathcart
- * @version 2020.10.20
+ * @version 2020.10.21
  */
 
 public class Game 
@@ -108,11 +108,15 @@ public class Game
         
         barbVillage.setExit("east", westPath);
         
-        // Initialize room items
+        // Initial NPCs with their items
+        castle.addNPC(new NonPlayerCharacter("King", "Please take this amulet to let you hold more items.", 
+                                             new Item("pendant", 0)));
+        market.addNPC(new NonPlayerCharacter("Trader1", "Take this sword.", new Item("sword", 2)));
+        market.addNPC(new NonPlayerCharacter("Trader2", "Take this apple.", new Item("apple", 1)));
+                                             
+        // Initialize items in rooms
         forest.addItem(new Item("apple", 1));
         forest.addItem(new Item("stick", 2));
-        
-        mines.addItem(new Item("pendant", 0));
         
         player = new Player("Bob", townSquare); // Create player and start them in the town square
     }
@@ -193,6 +197,10 @@ public class Game
                 
             case EAT:
                 eat();
+                break;
+                
+            case TALK:
+                talk(command);
                 break;
                 
             case EQUIP:
@@ -312,9 +320,13 @@ public class Game
         System.out.println("You have eaten now and you are not hungry any more.");
     }
     
+    /**
+     * Equip target item.
+     * @param command The user-entered command. 
+     */
     private void equip(Command command) {
         if(!command.hasSecondWord()) {
-            // if there is no second word, we don't know what to drop...
+            // if there is no second word, we don't know what to equip...
             System.out.println("Equip what?");
             return;
         }
@@ -328,6 +340,30 @@ public class Game
             System.out.println("That item doesn't exist! Check spelling.");
         } else {
             player.equipItem(newItem);
+        }
+        
+    }
+    
+    /**
+     * Talk to target NPC.
+     * @param command The user-entered command. 
+     */
+    private void talk(Command command) {
+        if(!command.hasSecondWord()) {
+            // if there is no second word, we don't know who to talk to...
+            System.out.println("Talk to who?");
+            return;
+        }
+        
+        String npcName = command.getSecondWord();
+        
+        // Try to talk to NPC.        
+        if (player.getRoom().getNPC(npcName) == null) {
+            System.out.println("That NPC doesn't exist! Check spelling.");
+        } else {
+            player.getRoom().getNPC(npcName).interact();
+            player.addItem(player.getRoom().getNPC(npcName).getItem());
+            player.getRoom().getNPC(npcName).setItem(null);
         }
         
     }
