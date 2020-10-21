@@ -63,7 +63,6 @@ public class Game
         market = new Room("in the town market");
         barbVillage = new Room("in the barbarian village west of town");
         
-        
         // initialise room exits
         townSquare.setExit("north", northPath);
         townSquare.setExit("east", eastPath);
@@ -113,6 +112,7 @@ public class Game
                                              new Item("pendant", 0)));
         market.addNPC(new NonPlayerCharacter("Trader1", "Take this sword.", new Item("sword", 2)));
         market.addNPC(new NonPlayerCharacter("Trader2", "Take this apple.", new Item("apple", 1)));
+        barbVillage.addNPC(new NonPlayerCharacter("Barbarian", "Don't come to these lands! Return at once! *Swings axe*", null));
                                              
         // Initialize items in rooms
         forest.addItem(new Item("apple", 1));
@@ -200,7 +200,7 @@ public class Game
                 break;
                 
             case TALK:
-                talk(command);
+                wantToQuit = talk(command);
                 break;
                 
             case EQUIP:
@@ -317,6 +317,7 @@ public class Game
      * Eat food. Currently the player always has food.
      */
     private void eat() {
+        player.eat();
         System.out.println("You have eaten now and you are not hungry any more.");
     }
     
@@ -348,11 +349,11 @@ public class Game
      * Talk to target NPC.
      * @param command The user-entered command. 
      */
-    private void talk(Command command) {
+    private boolean talk(Command command) {
         if(!command.hasSecondWord()) {
             // if there is no second word, we don't know who to talk to...
             System.out.println("Talk to who?");
-            return;
+            return false;
         }
         
         String npcName = command.getSecondWord();
@@ -362,10 +363,15 @@ public class Game
             System.out.println("That NPC doesn't exist! Check spelling.");
         } else {
             player.getRoom().getNPC(npcName).interact();
-            player.addItem(player.getRoom().getNPC(npcName).getItem());
-            player.getRoom().getNPC(npcName).setItem(null);
+            if (npcName.equalsIgnoreCase("barbarian"))
+                if(player.damage(3))
+                    return true;
+            if (player.getRoom().getNPC(npcName).getItem() != null) {
+                player.addItem(player.getRoom().getNPC(npcName).getItem());
+                player.getRoom().getNPC(npcName).setItem(null);
+            }
         }
-        
+        return false;
     }
     
     /** 

@@ -5,13 +5,16 @@ import java.util.ArrayList;
  * Players have a name and room location.
  *
  * @author Ryan Cathcart
- * @version 2020.10.20
+ * @version 2020.10.21
  */
 public class Player{
+    private final int MAX_HEALTH = 10;
+
     private String name;
     private Room currentRoom;
-    private int maxWeight;
+    private int currentHealth;
     private int currentWeight;
+    private int maxWeight;
     private ArrayList<Item> backpack;
 
     /**
@@ -22,8 +25,9 @@ public class Player{
     public Player(String name, Room initialRoom) {
         this.name = name;
         currentRoom = initialRoom;
-        maxWeight = 5;
+        currentHealth = MAX_HEALTH;
         currentWeight = 0;
+        maxWeight = 5;
         backpack = new ArrayList<Item>();
     }
     
@@ -44,12 +48,12 @@ public class Player{
     }
     
     /**
-     * Adds an item from the current room to the Player's backpack.
+     * Adds an to the Player's backpack.
      * @param item The item to be added.
      */
     public void addItem(Item item) {
         int itemWeight = item.getWeight();
-        if (maxWeight >= currentWeight + itemWeight) {
+        if (currentWeight + itemWeight <= maxWeight) {
             currentRoom.removeItem(item);
             backpack.add(item);
             currentWeight += itemWeight;
@@ -57,6 +61,14 @@ public class Player{
         } else {
             System.out.println("You can't carry this item! Your backpack is already too full.");
         }
+    }
+    
+    /**
+     * Gets the Player's current health
+     * @return the Player's health.
+     */
+    public int getHealth() {
+        return currentHealth;
     }
     
     /**
@@ -109,5 +121,35 @@ public class Player{
             System.out.println("Your backpack is empty.");
         }
         System.out.println("Total weight: " + currentWeight + "/" + maxWeight);
+        System.out.println("Health: " + currentHealth + "/" + MAX_HEALTH);
+    }
+    
+    /**
+     * Eats food.
+     */
+    public void eat() {
+        if (currentHealth + 2 >= MAX_HEALTH) {
+            currentHealth = MAX_HEALTH;
+        } else {
+            currentHealth += 2;
+        }
+        System.out.println("Health: " + currentHealth);
+    }
+    
+    /**
+     * Damages the player.
+     * @return if the player would die as a result of the damage.
+     */
+    public boolean damage(int dmg) {
+        if (currentHealth - dmg > 0) {
+            currentHealth -= dmg;
+            System.out.println("Health: " + currentHealth + "/" + MAX_HEALTH);
+            return false;
+        } else {
+            currentHealth = 0;
+            System.out.println("Health: " + currentHealth + "/" + MAX_HEALTH);
+            System.out.println("You have died!");
+            return true;
+        }
     }
 }
