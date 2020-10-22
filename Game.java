@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 /**
  *  This class is the main class of the "World of Zuul" application. 
  *  "World of Zuul" is a very simple, text based adventure game.  Users 
@@ -22,6 +24,7 @@ public class Game
 {
     private Parser parser;
     private Player player;
+    private ArrayList<Room> path;
     
     public static void main(String[] args) {
         Game game = new Game();
@@ -33,6 +36,7 @@ public class Game
      */
     public Game() 
     {
+        path = new ArrayList<Room>();
         createRooms();
         parser = new Parser();
     }
@@ -119,6 +123,7 @@ public class Game
         forest.addItem(new Item("stick", 2));
         
         player = new Player("Bob", townSquare); // Create player and start them in the town square
+        path.add(townSquare);                   // Add the starting room to the path list.
     }
 
     /**
@@ -210,6 +215,10 @@ public class Game
             case EQUIP:
                 equip(command);
                 break;
+                
+            case BACK:
+                back();
+                break;
 
             case QUIT:
                 wantToQuit = quit(command);
@@ -257,6 +266,7 @@ public class Game
                 System.out.println("This room is locked!");
             } else {
                 player.setRoom(nextRoom);
+                path.add(nextRoom);
                 System.out.println(player.getRoom().getLongDescription());
             }
         }
@@ -411,6 +421,22 @@ public class Game
             }
         }
         return false;
+    }
+    
+    /**
+     * Go back 1 step.
+     */
+    private void back() {
+        if (path.size() > 1) 
+            path.remove(path.size() - 1);
+        else
+            System.out.println("Can't go back anymore!");
+            
+        // Try to leave current room.
+        Room nextRoom = path.get(path.size() - 1);
+        
+        player.setRoom(nextRoom);
+        System.out.println(player.getRoom().getLongDescription());
     }
     
     /** 
