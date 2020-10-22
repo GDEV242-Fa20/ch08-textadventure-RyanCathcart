@@ -23,6 +23,7 @@ public class Room
     private HashMap<String, Room> exits;        // stores exits of this room.
     private ArrayList<Item> items;
     private ArrayList<NonPlayerCharacter> npcs;
+    private boolean locked;
 
     /**
      * Create a room described "description". Initially, it has
@@ -36,6 +37,7 @@ public class Room
         exits = new HashMap<>();
         items = new ArrayList<Item>();
         npcs = new ArrayList<NonPlayerCharacter>();
+        locked = false;
     }
     
     /**
@@ -51,6 +53,25 @@ public class Room
         exits = new HashMap<>();
         items = new ArrayList<Item>();
         items.add(item);
+        npcs = new ArrayList<NonPlayerCharacter>();
+    }
+    
+    /**
+     * Create a room described "description" and containing an item. 
+     * Initially, it has no exits. "description" is something 
+     * like "a kitchen" or "an open court yard".
+     * Using this constructor allows the room to be LOCKED.
+     * 
+     * @param description The room's description.
+     * @param locked      If the room is locked.
+     */
+    public Room(String description, boolean locked) 
+    {
+        this.description = description;
+        exits = new HashMap<>();
+        items = new ArrayList<Item>();
+        npcs = new ArrayList<NonPlayerCharacter>();
+        this.locked = locked;
     }
 
     /**
@@ -180,5 +201,19 @@ public class Room
         }
         return null;
     }
+    
+    /**
+     * Returns whether or not this Room is locked.
+     * @return if the room is locked.
+     */
+    public boolean isLocked() {
+        return locked;
+    }
+    
+    /**
+     * Unlocks the room.
+     */
+    public void unlock() {
+        locked = false;
+    }
 }
-

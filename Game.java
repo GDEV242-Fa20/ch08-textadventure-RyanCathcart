@@ -47,12 +47,12 @@ public class Game
         inn, forest, bank, market, barbVillage;
       
         // create the rooms
-        townSquare = new Room("in the town's square: the middle of town");
+        townSquare = new Room("in the town's square: the middle of town", new Item("key", 1));
         northPath = new Room("on the path north of the town square");
         eastPath = new Room("on the path east of the town square");
         southPath = new Room("on the path south of the town square");
         westPath = new Room("on the path west of the town square");
-        castle = new Room("in the town castle");
+        castle = new Room("in the town castle", true); // The church starts locked
         church = new Room("in the town church");
         blacksmith = new Room("in the town blacksmith");
         mines = new Room("in the town mines");
@@ -179,6 +179,10 @@ public class Game
                 goRoom(command);
                 break;
                 
+            case UNLOCK:
+                unlock(command);
+                break;
+                
             case LOOK:
                 look();
                 break;
@@ -248,10 +252,44 @@ public class Game
 
         if (nextRoom == null) {
             System.out.println("There is no door!");
+        } else {
+            if (nextRoom.isLocked()) {
+                System.out.println("This room is locked!");
+            } else {
+                player.setRoom(nextRoom);
+                System.out.println(player.getRoom().getLongDescription());
+            }
         }
-        else {
-            player.setRoom(nextRoom);
-            System.out.println(player.getRoom().getLongDescription());
+    }
+    
+    /** 
+     * Try to unlock the room in one direction, otherwise print an error message.
+     */
+    private void unlock(Command command) 
+    {
+        if(!command.hasSecondWord()) {
+            // if there is no second word, we don't know where to go...
+            System.out.println("Unlock where? (Second word must be one of the exits)");
+            return;
+        }
+
+        String direction = command.getSecondWord();
+
+        // Try to leave current room.
+        Room room = player.getRoom().getExit(direction);
+
+        if (room == null) {
+            System.out.println("There is nothing to unluck there!");
+        } else {
+            if (room.isLocked() && player.getItem("key") != null) {
+                room.unlock();
+                player.removeItem(player.getItem("key"));
+                System.out.println("The area has been unlocked!");
+            } else if (room.isLocked()) {
+                System.out.println("You don't have a key!");
+            } else {
+                System.out.println("This room is already unlocked!");
+            }
         }
     }
     
@@ -309,6 +347,7 @@ public class Game
         } else {
             player.removeItem(newItem);
             player.getRoom().addItem(newItem);
+            System.out.println(newItem.getDesc() + " dropped.");
             // maybe print backpack with new item in it?
         }
     }
