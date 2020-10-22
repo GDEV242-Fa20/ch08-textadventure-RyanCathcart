@@ -217,7 +217,7 @@ public class Game
                 break;
                 
             case BACK:
-                back();
+                back(command);
                 break;
 
             case QUIT:
@@ -424,14 +424,33 @@ public class Game
     }
     
     /**
-     * Go back 1 step.
+     * Go back 1 or more steps.
+     * @param command The user-entered command.
      */
-    private void back() {
-        if (path.size() > 1) 
-            path.remove(path.size() - 1);
-        else
-            System.out.println("Can't go back anymore!");
-            
+        private void back(Command command) {
+        int num;
+        if(!command.hasSecondWord()) {
+            num = 1;
+        } else {
+            try {
+                num = Integer.parseInt(command.getSecondWord());
+                if (num == 0) {
+                    System.out.println("please type an int greater than 0 after the back command.");
+                    return;
+                }
+            } catch (Exception e) {
+                System.out.println("please type an int greater than 0 after the back command.");
+                return;
+            }
+        }
+        
+        if (num > path.size())
+            num = path.size();    
+        for (int i=1; i<=num;i++) {
+            if (path.size() > 1) 
+                path.remove(path.size() - 1);
+        }
+        
         // Try to leave current room.
         Room nextRoom = path.get(path.size() - 1);
         
